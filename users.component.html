@@ -1,0 +1,48 @@
+<section>
+	<header>
+		<form>
+			<mat-form-field>
+				<input matInput placeholder="Search for a user" type="search" [formControl]="searchField"
+				 autocomplete="off">
+			</mat-form-field>
+		</form>
+	</header>
+
+	<div class="spinner" *ngIf="(usersState$ | async).loading">
+		<mat-spinner></mat-spinner>
+	</div>
+
+	<div style="text-align: center;" *ngIf="(usersState$ | async).error as error">{{ error.message }}</div>
+
+	<ng-container *ngIf='(usersState$ | async).results as userList'>
+		<main [@listAnimation]="userList.length">
+			<mat-accordion>
+				<mat-expansion-panel *ngFor="let user of userList">
+
+					<mat-expansion-panel-header>
+						<mat-panel-title>
+							{{ user.first }}
+						</mat-panel-title>
+						<mat-panel-description>
+							Aquí pueden ir más datos...
+						</mat-panel-description>
+					</mat-expansion-panel-header>
+
+					<mat-action-row>
+						<button mat-button (click)="goToUserProfile()">View profile</button>
+					</mat-action-row>
+
+					<ng-template matExpansionPanelContent>
+						Notas o descripción...
+					</ng-template>
+
+				</mat-expansion-panel>
+			</mat-accordion>
+
+			<mat-paginator *ngIf="userList.length" [length]="(usersState$ | async).resultsMetadata.totalFiltered" [pageSize]="(usersState$ | async).resultsMetadata.perPage">
+			</mat-paginator>
+		</main>
+	</ng-container>
+
+	<footer></footer>
+</section>
